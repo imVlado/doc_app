@@ -65,6 +65,12 @@ class User extends Authenticatable
 
     }
 
+    //Un usuario puede tener muchos appointments
+    public function appointments(){
+        return $this->hasMany(Appointments::class, 'user_id');
+
+    }
+
     /**
      * Get the attributes that should be cast.
      *
