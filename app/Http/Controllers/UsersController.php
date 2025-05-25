@@ -28,6 +28,7 @@ class UsersController extends Controller
 
         //Recolecta los datos del usuario y los detalles de doctores
         foreach($doctorData as $data){
+            //Ordena doctor name y detalles del doctor
             foreach($doctor as $info){
                 if($data['doc_id'] == $info['id']){
                     $data['doctor_name'] = $info['name'];

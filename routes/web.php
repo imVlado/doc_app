@@ -1,8 +1,8 @@
 <?php
 
+use App\Http\Controllers\DocsController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Response;
-use Illuminate\Support\Facades\Storage;
 
 Route::get('/image/{filename}', function ($filename) {
     $path = storage_path('app/public/profile-photos/' . $filename);
@@ -27,9 +27,7 @@ Route::get('/', function () {
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
-    'verified',
+    'verified'
 ])->group(function () {
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
+    Route::get('/dashboard', [DocsController::class, 'index'])->name('dashboard');
 });
