@@ -24,7 +24,9 @@ class UsersController extends Controller
         $doctorData = Doctor::all();
         //Retorna las reservaciones de hoy junto con la info del usuario
         $date = now()->format('n/j/Y');
-        $appointment = Appointments::where('date', $date)->first();
+        
+        
+        $appointment = Appointments::where('status', 'upcoming')->where('date', $date)->first();
 
         //Recolecta los datos del usuario y los detalles de doctores
         foreach($doctorData as $data){

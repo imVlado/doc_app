@@ -71,16 +71,10 @@ class User extends Authenticatable
 
     }
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
-    protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
+    //Un usuario puede tener muchas reviews
+    public function reviews(){
+        return $this->hasMany(Reviews::class, 'user_id');
+
     }
+
 }

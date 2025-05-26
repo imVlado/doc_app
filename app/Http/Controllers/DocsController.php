@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Appointments;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use App\Models\Reviews;
 
 class DocsController extends Controller
 {
@@ -12,12 +13,12 @@ class DocsController extends Controller
      * Display a listing of the resource.
      */
     public function index()
-    {
-        //obten reservaciones del doctor, pacientes y muestra en el dashboard
+    {  
         $doctor = Auth::user();
         $appointments = Appointments::where('doc_id', $doctor->id)->where('status', 'upcoming')->get();
+        $reviews = Reviews::where('doc_id', $doctor->id)->where('status', 'active')->get();
 
-        return view('dashboard')->with(['doctor'=>$doctor, 'appointments'=>$appointments]);
+        return view('dashboard')->with(['doctor'=>$doctor, 'appointments'=>$appointments,'reviews'=>$reviews]);
     }
 
     /**
@@ -33,7 +34,27 @@ class DocsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        //Almacena los detalles de la reservación para la aplicación
+        $reviews = new Reviews();
+        //actualiza el estado de la reservación
+        $appointment = Appointments::where('id', $request->get('appointment_id'))->first();
+
+        //guarda los ratings y reviews
+        $reviews->user_id = Auth::user()->id;
+        $reviews->doc_id = $request->get('doc_id');
+        $reviews->ratings = $request->get('ratings');
+        $reviews->reviews = $request->get('reviews');
+        $reviews->reviewed_by = Auth::user()->name;
+        $reviews->status = 'active';
+        $reviews->save();
+
+        //actualiza el estado de la reservación
+        $appointment->status = 'complete';
+        $appointment->save();
+
+        return response()->json([
+            'success' => 'The appointment has been completed and reviewed succesfully!',
+        ], 200);
     }
 
     /**
